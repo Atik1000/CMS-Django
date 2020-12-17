@@ -1,6 +1,7 @@
 {% extends 'accounts/main.html' %}
 
 {% block content %}
+{% include 'accounts/status.html' %}
 <div class="container">
     <div class="row">
     <div class="col-md-5 mt-5">
@@ -9,10 +10,18 @@
         <div class="card card-body">
             <a href="" class="btn btn-primary btn btn-sm btn-block">Create Customer </a>
             <table class="table table-sm">
-                <th></th>
-                <th>Customer</th>
-                <th>Orders</th>
-            </table>
+               <tr>
+                   <th>Customer</th>
+                <th>Phone</th>
+               </tr>
+
+            {% for customer in customers %}
+            <tr>
+                <td>{{customer.name }}</td>
+                <td>{{customer.phone }}</td>
+            </tr>
+            {% endfor %}
+                 </table>
         </div>
     </div>
     <div class="col-md-7 mt-5">
@@ -25,6 +34,16 @@
                 <th>Date Orders</th>
                 <th>update</th>
                 <th>remove</th>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.product}}</td>
+                    <td>{{ order.status}}</td>
+                    <td>{{ order.date_created}}</td>
+                    <td><a href="">update</a> </td>
+                    <td><a href="">Delete</a> </td>
+                </tr>
+                {% endfor %}
+
             </table>
     </div>
 </div>
