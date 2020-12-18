@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
 from .models import *
 from .forms import *
+from .filters import OrderFilter
 
 
 def home(request):
@@ -29,7 +30,9 @@ def customer(request, pk):
     customers = Customer.objects.get(id=pk)
     orders = customers.order_set.all()
     orders_count = orders.count()
-    context = {'customer': customers, 'order': orders, 'orders_count': orders_count}
+    my_filter = OrderFilter(request.GET, gueryset=orders)
+    orders = my_filter.qs
+    context = {'customer': customers, 'order': orders, 'orders_count': orders_count, 'myFilter': my_filter}
     return render(request, 'accounts/customer.html', context)
 
 
@@ -60,6 +63,6 @@ def updateOrder(request, pk):
 
 def deleteOrder(request, pk):
     order = Order.objects.get(id=pk)
-    order.is_delete = True
-    order.save()
+    order.delete()
+    # order.save()
     return redirect('/')

@@ -7,7 +7,7 @@
             <h5>Customer:{{ customer.name }}</h5>
             <hr>
             <a href="" class="btn btn-outline-info btn-sm btn-block">Update</a>
-            <a href="" class="btn btn-outline-danger btn-sm btn-block">delete</a>
+            <a href="" class="btn btn-outline-danger btn-sm btn-block">place order</a>
         </div>
     </div>
     <div class="col-md">
@@ -30,6 +30,7 @@
     <div class="col">
         <div class="card card-body">
             <form action="" method="get">
+                {{ myFilter.form  }}
                 <button class="btn btn-primary" type="submit">search</button>
             </form>
         </div>
@@ -53,8 +54,8 @@
                     <td>{{ order.product.category }}</td>
                     <td>{{ order.date_created }}</td>
                     <td>{{ order.status }}</td>
-                    <td><a class="btn btn-sm btn-info" href="">update</a> </td>
-                    <td><a class="btn btn-sm btn-danger" href="">remove</a> </td>
+                    <td><a class="btn btn-sm btn-info" href="{% url 'update-order' order.id %}">update</a> </td>
+                    <td><a class="btn btn-sm btn-danger" href="{% url 'delete' order.id %}">Delete</a> </td></td>
                 </tr>
                 {% endfor %}
             </table>
