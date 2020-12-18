@@ -2,14 +2,14 @@
  height:30px;
  }
         body{
-        background-color:#ebeff5;
+        background-color:#bdc3c7;
         }
         #total-orders{
         background-color:#4cb4c7;
         }
         #orders-delivered{
-        background-color:#7abecc;
+        background-color:#9b59b6;
         }
         #orders-pending{
-        background-color:#7CD1C0;
+        background-color:#27ae60;
         }
