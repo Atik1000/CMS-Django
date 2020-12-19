@@ -1,8 +1,26 @@
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
 from .models import *
+from django.contrib.auth.forms import UserCreationForm
 from .forms import *
 from .filters import OrderFilter
+
+
+def reg_page(request):
+    form = UserCreationForm()
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+    context = {'form': form}
+
+    return render(request, 'accounts/registration.html', context)
+
+
+def login_page(request):
+    context = {}
+
+    return render(request, 'accounts/login.html', context)
 
 
 def home(request):
@@ -30,7 +48,7 @@ def customer(request, pk):
     customers = Customer.objects.get(id=pk)
     orders = customers.order_set.all()
     orders_count = orders.count()
-    my_filter = OrderFilter(request.GET, gueryset=orders)
+    my_filter = OrderFilter(request.GET, queryset=orders)
     orders = my_filter.qs
     context = {'customer': customers, 'order': orders, 'orders_count': orders_count, 'myFilter': my_filter}
     return render(request, 'accounts/customer.html', context)
