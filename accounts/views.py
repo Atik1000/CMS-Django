@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
 from .models import *
@@ -18,14 +19,16 @@ def reg_page(request):
     if request.method == "POST":
         form = SignUpForm(data=request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            username = form.cleaned_data.get('username')
             register = True
             user = form.cleaned_data.get('username')
-            customer_qs = Customer.objects.create(
-                name=form.cleaned_data.get('username'), email=form.cleaned_data.get('email'),
-                phone=form.cleaned_data.get('phone', 12345))
+
+            # customer_qs = Customer.objects.create(
+            #     name=form.cleaned_data.get('username'), email=form.cleaned_data.get('email'),
+            #     phone=form.cleaned_data.get('phone', 12345))
             messages.success(
-                request, 'Account created successfully for' + user)
+                request, 'Account created successfully for' + username)
             return redirect('login')
     context = {'form': form, 'register': register}
     return render(request, 'accounts/registration.html', context)
@@ -61,8 +64,8 @@ def home(request):
     customers = Customer.objects.all()
 
     total_customers = customers.count()
-    total_ordered = orders.count()
 
+    total_ordered = orders.count()
     delivered = orders.filter(status='Delivered').count()
     pending = orders.filter(status='pending').count()
 
@@ -71,12 +74,36 @@ def home(request):
     return render(request, 'accounts/dashbord.html', context)
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
 def user_page(request):
-    context = {}
+    orders = request.user.customers.order_set.all()
+
+    total_ordered = orders.count()
+    delivered = orders.filter(status='Delivered').count()
+    pending = orders.filter(status='pending').count()
+
+    context = {'order': orders, 'total_ordered': total_ordered, 'delivered': delivered,
+               'pending': pending}
     return render(request, 'accounts/user.html', context)
 
 
 @login_required(login_url='login')
+# @allowed_users(allowed_roles=[''])
+def account_settings(request):
+    customer = request.user.customers
+    form = CustomerForm(instance=customer)
+
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, request.FILES, instance=customer)
+        if form.is_valid():
+            form.save()
+    context = {'form': form}
+    return render(request, 'accounts/account_settings.html', context)
+
+
+@login_required(login_url='login')
+@admin_only
 def products(request):
     product = Product.objects.all()
     context = {'pd': product}
@@ -84,6 +111,7 @@ def products(request):
 
 
 @login_required(login_url='login')
+@admin_only
 def customer(request, pk):
     customers = Customer.objects.get(id=pk)
     orders = customers.order_set.all()
@@ -96,6 +124,7 @@ def customer(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def createOrder(request):
     forms = OrderForm()
     if request.method == 'POST':
@@ -126,7 +155,6 @@ def updateOrder(request, pk):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def deleteOrder(request, pk):
-
     order = Order.objects.get(id=pk)
     order.delete()
     # order.save()

@@ -1,10 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>This is User page</h1>
-</body>
-</html>
+{% extends 'accounts/main.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+    <div class="col-md">
+        <div class="card" id="total-orders" style="width: 18rem;background-color:#16a085;padding:20px;color:white; border-radius:10px;">
+  <div class="card-body">
+    <h5 class="card-title">Total Order</h5>
+    <h6 class="card-title" style="color:white;">{{ total_ordered }}</h6>
+
+  </div>
+</div>
+    </div>
+    <div class="col-md">
+        <div class="card" id="orders-delivered" style="width: 18rem;background-color:#9b59b6;padding:20px;color:white; border-radius:10px;">
+  <div class="card-body">
+    <h5 class="card-title">Order Delevered</h5>
+    <h6 class="card-title">{{ delivered }}</h6>
+
+
+  </div>
+</div>
+    </div>
+
+
+    <div class="col-md">
+        <div class="card" id="orders-pending" style="width: 18rem;background-color:#d35400;padding:20px;color:white; border-radius:10px;">
+  <div class="card-body">
+    <h5 class="card-title">Order pending</h5>
+    <h6 class="card-title">{{ pending }}</h6>
+
+  </div>
+</div>
+    </div>
+</div>
+
+
+
+</div>
+<div class="container">
+    <div class="row mt-4">
+    <div class="col-md">
+        <div class="card card-body">
+            <table  class="table table-sm" >
+                <tr>
+                    <th>product</th>
+                    <th>Notes</th>
+                    <th>Date Ordered</th>
+                    <th>status</th>
+                </tr>
+                {% for order in order %}
+                <tr>
+                    <td>{{ order.product }}</td>
+                    <td>{{ order.notes }}</td>
+                    <td>{{ order.date_created }}</td>
+                    <td>{{ order.status }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+
+{% endblock %}
