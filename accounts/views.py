@@ -124,7 +124,7 @@ def customer(request, pk):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+# @allowed_users(allowed_roles=['admin'])
 def createOrder(request):
     forms = OrderForm()
     if request.method == 'POST':
